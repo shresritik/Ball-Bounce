@@ -14,11 +14,11 @@ function getRandomValue(min, max) {
   const value = Math.random() * (maxValue - minValue) + minValue;
   return value;
 }
-const collision = (x1, x2, y1, y2) => {
+const collision = (x1, x2, y1, y2, r1, r2) => {
   const dx = Math.pow(x2 - x1, 2);
   const dy = Math.pow(y2 - y1, 2);
   const dist = Math.sqrt(dx + dy);
-  if (dist <= 80) {
+  if (dist <= (r1 + r2) / 2) {
     console.log("collision", dist);
     return true;
   }
@@ -26,7 +26,7 @@ const collision = (x1, x2, y1, y2) => {
 function update() {
   b1.move();
   b2.move();
-  const collisionState = collision(b1.x, b2.x, b1.y, b2.y);
+  const collisionState = collision(b1.x, b2.x, b1.y, b2.y, b1.r, b2.r);
   if (collisionState) {
     b1.dx *= -1;
     b1.dy *= -1;
@@ -56,6 +56,7 @@ class Ball {
     this.element.style.height = `${this.r + "px"}`;
     this.element.style.width = `${this.r + "px"}`;
     this.element.style.borderRadius = "50%";
+    this.mass = this.r * this.r * this.r;
     box.appendChild(this.element);
   }
   moveY = () => {
@@ -72,6 +73,10 @@ class Ball {
       this.dx *= -1;
     }
   };
+  speedFunc() {
+    // magnitude of velocity vector
+    return Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+  }
   move = () => {
     // this.y += this.dy * this.speed;
     // this.element.style.top = this.y + "px";
@@ -87,20 +92,78 @@ class Ball {
     this.moveX();
     this.moveY();
   };
+  angle() {
+    // velocity's angle with the x axis
+    return Math.atan2(this.dy, this.dx);
+  }
 }
+const objArray = [];
 for (let i = 0; i < 8; i++) {
   const bal = new Ball(
     getRandomValue(0, 800),
     getRandomValue(0, 600),
     getRandomValue(0, 80)
   );
-  animate(bal);
+  objArray.push(bal);
+}
+for (let i = 0; i < objArray.length; i++) {
+  animate(objArray[i]);
+}
+
+function ballCollision() {
+  for (let i = 0; i < objArray.length - 1; i++) {
+    for (let j = i + 1; j < objArray.length; j++) {
+      let ob1 = objArray[i];
+      let ob2 = objArray[j];
+      let dist = collision(ob1.x, ob2.x, ob1.y, ob2.y, ob1.r, ob2.r);
+
+      if (dist) {
+        let theta1 = ob1.angle();
+        let theta2 = ob2.angle();
+        let phi = Math.atan2(ob2.y - ob1.y, ob2.x - ob1.x);
+        let m1 = ob1.mass;
+        let m2 = ob2.mass;
+        let v1 = ob1.speedFunc();
+        let v2 = ob2.speedFunc();
+
+        let dx1F =
+          ((v1 * Math.cos(theta1 - phi) * (m1 - m2) +
+            2 * m2 * v2 * Math.cos(theta2 - phi)) /
+            (m1 + m2)) *
+            Math.cos(phi) +
+          v1 * Math.sin(theta1 - phi) * Math.cos(phi + Math.PI / 2);
+        let dy1F =
+          ((v1 * Math.cos(theta1 - phi) * (m1 - m2) +
+            2 * m2 * v2 * Math.cos(theta2 - phi)) /
+            (m1 + m2)) *
+            Math.sin(phi) +
+          v1 * Math.sin(theta1 - phi) * Math.sin(phi + Math.PI / 2);
+        let dx2F =
+          ((v2 * Math.cos(theta2 - phi) * (m2 - m1) +
+            2 * m1 * v1 * Math.cos(theta1 - phi)) /
+            (m1 + m2)) *
+            Math.cos(phi) +
+          v2 * Math.sin(theta2 - phi) * Math.cos(phi + Math.PI / 2);
+        let dy2F =
+          ((v2 * Math.cos(theta2 - phi) * (m2 - m1) +
+            2 * m1 * v1 * Math.cos(theta1 - phi)) /
+            (m1 + m2)) *
+            Math.sin(phi) +
+          v2 * Math.sin(theta2 - phi) * Math.sin(phi + Math.PI / 2);
+
+        ob1.dx = dx1F;
+        ob1.dy = dy1F;
+        ob2.dx = dx2F;
+        ob2.dy = dy2F;
+      }
+    }
+  }
 }
 
 function animate(a) {
   setInterval(() => {
-    a.moveY();
-    a.moveX();
+    a.move();
+    ballCollision();
   }, 1000 / 144);
 }
 // update();
