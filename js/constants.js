@@ -1,0 +1,13 @@
+const box = document.getElementById("box");
+const ball = document.getElementById("ball");
+const BOUNDARY_HEIGHT = 800;
+const BOUNDARY_WIDTH = 1000;
+document.body.style.backgroundColor = "black";
+box.style.backgroundColor = "white";
+box.style.height = `${BOUNDARY_HEIGHT}px`;
+box.style.width = `${BOUNDARY_WIDTH}px`;
+box.style.margin = "auto";
+box.style.position = "relative";
+const NO_OF_BALLS = 10;
+const objArray = [];
+const DIAMETER = 200;
