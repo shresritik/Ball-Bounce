@@ -31,38 +31,81 @@ function resolveCollision(currentBall, adjacentBall) {
   // Prevent accidental overlap of balls when colliding
   if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
     // Grab angle between the two colliding balls
-    const angle = -Math.atan2(
-      adjacentBall.y - currentBall.y,
-      adjacentBall.x - currentBall.x
-    );
 
     // Store mass in var for better readability in collision equation
-    const m1 = currentBall.mass;
-    const m2 = adjacentBall.mass;
-
-    // Velocity before equation
-    const u1 = rotate(currentBall.velocity, angle);
-    const u2 = rotate(adjacentBall.velocity, angle);
 
     // Velocity after 1d collision equation
+    let m1 = currentBall.mass;
+    let m2 = adjacentBall.mass;
     const v1 = {
-      x: (u1.x * (m1 - m2)) / (m1 + m2) + (u2.x * 2 * m2) / (m1 + m2),
-      y: u1.y,
+      x:
+        (currentBall.velocity.x * (m1 - m2)) / (m1 + m2) +
+        (adjacentBall.velocity.x * 2 * m2) / (m1 + m2),
+      y:
+        (currentBall.velocity.y * (m1 - m2)) / (m1 + m2) +
+        (adjacentBall.velocity.y * 2 * m2) / (m1 + m2),
     };
     const v2 = {
-      x: (u2.x * (m1 - m2)) / (m1 + m2) + (u1.x * 2 * m2) / (m1 + m2),
-      y: u2.y,
+      x:
+        (adjacentBall.velocity.x * (m1 - m2)) / (m1 + m2) +
+        (currentBall.velocity.x * 2 * m2) / (m1 + m2),
+      y:
+        (adjacentBall.velocity.y * (m1 - m2)) / (m1 + m2) +
+        (currentBall.velocity.y * 2 * m2) / (m1 + m2),
     };
 
     // Final velocity after rotating axis back to original location
-    const vFinal1 = rotate(v1, -angle);
-    const vFinal2 = rotate(v2, -angle);
 
     // Swap ball velocities for realistic bounce effect
-    currentBall.velocity.x = vFinal1.x;
-    currentBall.velocity.y = vFinal1.y;
+    currentBall.velocity.x = v1.x;
+    currentBall.velocity.y = v1.y;
 
-    adjacentBall.velocity.x = vFinal2.x;
-    adjacentBall.velocity.y = vFinal2.y;
+    adjacentBall.velocity.x = v2.x;
+    adjacentBall.velocity.y = v2.y;
   }
 }
+// function resolveCollision(currentBall, adjacentBall) {
+//   const xVelocityDiff = currentBall.velocity.x - adjacentBall.velocity.x;
+//   const yVelocityDiff = currentBall.velocity.y - adjacentBall.velocity.y;
+
+//   const xDist = adjacentBall.x - currentBall.x;
+//   const yDist = adjacentBall.y - currentBall.y;
+
+//   // Prevent accidental overlap of balls when colliding
+//   if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+//     // Grab angle between the two colliding balls
+//     const angle = -Math.atan2(
+//       adjacentBall.y - currentBall.y,
+//       adjacentBall.x - currentBall.x
+//     );
+
+//     // Store mass in var for better readability in collision equation
+//     const m1 = currentBall.mass;
+//     const m2 = adjacentBall.mass;
+
+//     // Velocity before equation
+//     const u1 = rotate(currentBall.velocity, angle);
+//     const u2 = rotate(adjacentBall.velocity, angle);
+
+//     // Velocity after 1d collision equation
+//     const v1 = {
+//       x: (u1.x * (m1 - m2)) / (m1 + m2) + (u2.x * 2 * m2) / (m1 + m2),
+//       y: u1.y,
+//     };
+//     const v2 = {
+//       x: (u2.x * (m1 - m2)) / (m1 + m2) + (u1.x * 2 * m2) / (m1 + m2),
+//       y: u2.y,
+//     };
+
+//     // Final velocity after rotating axis back to original location
+//     const vFinal1 = rotate(v1, -angle);
+//     const vFinal2 = rotate(v2, -angle);
+
+//     // Swap ball velocities for realistic bounce effect
+//     currentBall.velocity.x = vFinal1.x;
+//     currentBall.velocity.y = vFinal1.y;
+
+//     adjacentBall.velocity.x = vFinal2.x;
+//     adjacentBall.velocity.y = vFinal2.y;
+//   }
+// }
