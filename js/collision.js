@@ -13,7 +13,6 @@ function ballCollision() {
     for (let j = i + 1; j < objArray.length; j++) {
       let ob1 = objArray[i];
       let ob2 = objArray[j];
-
       let dist = collision(ob1.x, ob2.x, ob1.y, ob2.y, ob1.r, ob2.r);
       if (dist) {
         resolveCollision(objArray[i], objArray[j]);
@@ -47,11 +46,11 @@ function resolveCollision(currentBall, adjacentBall) {
     };
     const v2 = {
       x:
-        (adjacentBall.velocity.x * (m1 - m2)) / (m1 + m2) +
-        (currentBall.velocity.x * 2 * m2) / (m1 + m2),
+        (adjacentBall.velocity.x * (m2 - m1)) / (m1 + m2) +
+        (currentBall.velocity.x * 2 * m1) / (m1 + m2),
       y:
-        (adjacentBall.velocity.y * (m1 - m2)) / (m1 + m2) +
-        (currentBall.velocity.y * 2 * m2) / (m1 + m2),
+        (adjacentBall.velocity.y * (m2 - m1)) / (m1 + m2) +
+        (currentBall.velocity.y * 2 * m1) / (m1 + m2),
     };
 
     // Final velocity after rotating axis back to original location
@@ -88,13 +87,30 @@ function resolveCollision(currentBall, adjacentBall) {
 //     const u2 = rotate(adjacentBall.velocity, angle);
 
 //     // Velocity after 1d collision equation
+//     // const v1 = {
+//     //       x:
+//     //         (currentBall.velocity.x * (m1 - m2)) / (m1 + m2) +
+//     //         (adjacentBall.velocity.x * 2 * m2) / (m1 + m2),
+//     //       y:
+//     //         (currentBall.velocity.y * (m1 - m2)) / (m1 + m2) +
+//     //         (adjacentBall.velocity.y * 2 * m2) / (m1 + m2),
+//     //     };
+//     //     const v2 = {
+//     //       x:
+//     //         (adjacentBall.velocity.x * (m2 - m1)) / (m1 + m2) +
+//     //         (currentBall.velocity.x * 2 * m1) / (m1 + m2),
+//     //       y:
+//     //         (adjacentBall.velocity.y * (m2 - m1)) / (m1 + m2) +
+//     //         (currentBall.velocity.y * 2 * m1) / (m1 + m2),
+//     //     };
+
 //     const v1 = {
 //       x: (u1.x * (m1 - m2)) / (m1 + m2) + (u2.x * 2 * m2) / (m1 + m2),
-//       y: u1.y,
+//       y: (u1.y * (m1 - m2)) / (m1 + m2) + (u2.y * 2 * m2) / (m1 + m2),
 //     };
 //     const v2 = {
-//       x: (u2.x * (m1 - m2)) / (m1 + m2) + (u1.x * 2 * m2) / (m1 + m2),
-//       y: u2.y,
+//       x: (u2.x * (m2 - m1)) / (m1 + m2) + (u1.x * 2 * m2) / (m1 + m2),
+//       y: (u2.y * (m2 - m1)) / (m1 + m2) + (u1.y * 2 * m2) / (m1 + m2),
 //     };
 
 //     // Final velocity after rotating axis back to original location
