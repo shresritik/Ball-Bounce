@@ -8,7 +8,7 @@ const collision = (x1, x2, y1, y2, d1, d2) => {
   }
 };
 function ballCollision() {
-  // check collision between all the balls
+  // check collision between a particular ball and all the balls
   for (let i = 0; i < objArray.length - 1; i++) {
     for (let j = i + 1; j < objArray.length; j++) {
       let ob1 = objArray[i];
@@ -21,28 +21,28 @@ function ballCollision() {
     }
   }
 }
-function resolveCollision(particle, otherParticle) {
-  const xVelocityDiff = particle.velocity.x - otherParticle.velocity.x;
-  const yVelocityDiff = particle.velocity.y - otherParticle.velocity.y;
+function resolveCollision(currentBall, adjacentBall) {
+  const xVelocityDiff = currentBall.velocity.x - adjacentBall.velocity.x;
+  const yVelocityDiff = currentBall.velocity.y - adjacentBall.velocity.y;
 
-  const xDist = otherParticle.x - particle.x;
-  const yDist = otherParticle.y - particle.y;
+  const xDist = adjacentBall.x - currentBall.x;
+  const yDist = adjacentBall.y - currentBall.y;
 
-  // Prevent accidental overlap of particles
+  // Prevent accidental overlap of balls when colliding
   if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
-    // Grab angle between the two colliding particles
+    // Grab angle between the two colliding balls
     const angle = -Math.atan2(
-      otherParticle.y - particle.y,
-      otherParticle.x - particle.x
+      adjacentBall.y - currentBall.y,
+      adjacentBall.x - currentBall.x
     );
 
     // Store mass in var for better readability in collision equation
-    const m1 = particle.mass;
-    const m2 = otherParticle.mass;
+    const m1 = currentBall.mass;
+    const m2 = adjacentBall.mass;
 
     // Velocity before equation
-    const u1 = rotate(particle.velocity, angle);
-    const u2 = rotate(otherParticle.velocity, angle);
+    const u1 = rotate(currentBall.velocity, angle);
+    const u2 = rotate(adjacentBall.velocity, angle);
 
     // Velocity after 1d collision equation
     const v1 = {
@@ -58,11 +58,11 @@ function resolveCollision(particle, otherParticle) {
     const vFinal1 = rotate(v1, -angle);
     const vFinal2 = rotate(v2, -angle);
 
-    // Swap particle velocities for realistic bounce effect
-    particle.velocity.x = vFinal1.x;
-    particle.velocity.y = vFinal1.y;
+    // Swap ball velocities for realistic bounce effect
+    currentBall.velocity.x = vFinal1.x;
+    currentBall.velocity.y = vFinal1.y;
 
-    otherParticle.velocity.x = vFinal2.x;
-    otherParticle.velocity.y = vFinal2.y;
+    adjacentBall.velocity.x = vFinal2.x;
+    adjacentBall.velocity.y = vFinal2.y;
   }
 }

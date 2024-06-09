@@ -15,9 +15,10 @@ function rotate(velocity, angle) {
 }
 function animateAll(a) {
   function animate() {
-    a.move();
     ballCollision();
     a.detectCollision();
+    a.move();
+
     requestAnimationFrame(animate);
   }
   animate();
