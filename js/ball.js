@@ -11,8 +11,6 @@ class Ball {
     this.element = document.createElement("div");
     this.element.style.position = "absolute";
 
-    // this.element.style.top = `${this.y + "px"}`;
-    // this.element.style.left = `${this.x + "px"}`;
     this.element.style.backgroundColor = this.color;
     this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
 
@@ -23,13 +21,14 @@ class Ball {
   }
 
   move = () => {
+    // move x and y position
     this.x += this.velocity.x * this.speed;
     this.y += this.velocity.y * this.speed;
-    // this.element.style.left = this.x + "px";
-    // this.element.style.top = this.y + "px";
+
     this.element.style.transform = `translate(${this.x}px,${this.y}px)`;
   };
   detectCollision = () => {
+    //clip the balls on the boundary
     if (this.x + this.r > BOUNDARY_WIDTH) {
       this.x = Math.max(this.r, this.x);
       this.velocity.x *= -1;
@@ -43,11 +42,5 @@ class Ball {
       this.y = Math.min(this.y + BOUNDARY_HEIGHT - this.r, this.y);
       this.velocity.y *= -1;
     }
-    // if (this.x + this.r > BOUNDARY_WIDTH || this.x < 0) {
-    //   this.velocity.x *= -1;
-    // }
-    // if (this.y + this.r > BOUNDARY_HEIGHT || this.y < 0) {
-    //   this.velocity.y *= -1;
-    // }
   };
 }
