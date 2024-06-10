@@ -6,6 +6,7 @@ const collision = (x1, x2, y1, y2, d1, d2) => {
   if (dist < (d1 + d2) / 2) {
     return true;
   }
+  return false;
 };
 function ballCollision() {
   // check collision between a particular ball and all the balls
